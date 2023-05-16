@@ -1,0 +1,34 @@
+#!/bin/bash
+BASE_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+if [ $# -lt 2 ]; then
+    echo "Usage: ./opencdr <hostname> [getLogs|getLogsByType|getRecords|runPeriodic]";
+    exit 1
+fi
+
+if [ "$2" == "getLogs" ]; then 
+    read -p "Enter (optional) keyword for search: " KEYWORD
+    echo ""
+    echo '<request>
+<command>getLogs</command>
+<argument>'$KEYWORD'</argument>
+</request>' | curl -s -d@- http://$HOSTNAME:16384 | xmllint --format -
+elif [ "$2" == "getLogsByType" ]; then 
+    read -p "Enter log level for search: " LEVEL
+    LEVEL="${LEVEL:-info}"
+    echo '<request>
+<command>getLogsByType</command>
+<argument>'$LEVEL'</argument>
+</request>' | curl -s -d@- http://$HOSTNAME:16384 | xmllint --format -
+elif [ "$2" == "getRecords" ]; then
+    read -p "Enter your authorization: " AUTH
+    echo '<request>
+<command>getRecords</command>
+<authorization>'$AUTH'</authorization>
+</request>' | curl -s -d@- http://$HOSTNAME:16384 | xmllint --format -
+elif [ "$2" == "runPeriodic" ]; then
+    read -p "Enter your authorization: " AUTH
+    echo '<request>
+<command>runPeriodic</command>
+<authorization>'$AUTH'</authorization>
+</request>' | curl -s -d@- http://$HOSTNAME:16384 | xmllint --format -
+fi

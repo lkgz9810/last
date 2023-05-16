@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  server:
+    image: opencdr_server
+    ports:
+      - "16384:16384"
+    volumes:
+      - /cs/data/opencdr:/data:ro
+    deploy:
+      restart_policy: {}
+      resources:
+        limits:
+          cpus: '0.8'
+          memory: 256M
